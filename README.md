@@ -6,12 +6,12 @@
 ## Table of Contents
 
   1. [Types](#types)
+  1. [Variables](#variables)
   1. [Objects](#objects)
   1. [Arrays](#arrays)
   1. [Strings](#strings)
   1. [Functions](#functions)
   1. [Properties](#properties)
-  1. [Variables](#variables)
   1. [Hoisting](#hoisting)
   1. [Conditional Expressions & Equality](#conditional-expressions--equality)
   1. [Blocks](#blocks)
@@ -71,290 +71,6 @@
 
 **[⬆ back to top](#table-of-contents)**
 
-## Objects
-
-  - Use the literal syntax for object creation.
-
-    ```javascript
-    // bad
-    var item = new Object();
-
-    // good
-    var item = {};
-    ```
-
-  - Don't use [reserved words](http://es5.github.io/#x7.6.1) as keys. It won't work in IE8. [More info](https://github.com/airbnb/javascript/issues/61)
-
-    ```javascript
-    // bad
-    var superman = {
-      default: { clark: 'kent' },
-      private: true
-    };
-
-    // good
-    var superman = {
-      defaults: { clark: 'kent' },
-      hidden: true
-    };
-    ```
-
-  - Use readable synonyms in place of reserved words.
-
-    ```javascript
-    // bad
-    var superman = {
-      class: 'alien'
-    };
-
-    // bad
-    var superman = {
-      klass: 'alien'
-    };
-
-    // good
-    var superman = {
-      type: 'alien'
-    };
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-## Arrays
-
-  - Use the literal syntax for array creation
-
-    ```javascript
-    // bad
-    var items = new Array();
-
-    // good
-    var items = [];
-    ```
-
-  - If you don't know array length use Array#push.
-
-    ```javascript
-    var someStack = [];
-
-
-    // bad
-    someStack[someStack.length] = 'abracadabra';
-
-    // good
-    someStack.push('abracadabra');
-    ```
-
-  - When you need to copy an array use Array#slice. [jsPerf](http://jsperf.com/converting-arguments-to-an-array/7)
-
-    ```javascript
-    var len = items.length,
-        itemsCopy = [],
-        i;
-
-    // bad
-    for (i = 0; i < len; i++) {
-      itemsCopy[i] = items[i];
-    }
-
-    // good
-    itemsCopy = items.slice();
-    ```
-
-  - To convert an array-like object to an array, use Array#slice.
-
-    ```javascript
-    function trigger() {
-      var args = Array.prototype.slice.call(arguments);
-      ...
-    }
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Strings
-
-  - Use single quotes `''` for strings
-
-    ```javascript
-    // bad
-    var name = "Bob Parr";
-
-    // good
-    var name = 'Bob Parr';
-
-    // bad
-    var fullName = "Bob " + this.lastName;
-
-    // good
-    var fullName = 'Bob ' + this.lastName;
-    ```
-
-  - Strings longer than 80 characters should be written across multiple lines using string concatenation.
-  - Note: If overused, long strings with concatenation could impact performance. [jsPerf](http://jsperf.com/ya-string-concat) & [Discussion](https://github.com/airbnb/javascript/issues/40)
-
-    ```javascript
-    // bad
-    var errorMessage = 'This is a super long error that was thrown because of Batman. When you stop to think about how Batman had anything to do with this, you would get nowhere fast.';
-
-    // bad
-    var errorMessage = 'This is a super long error that \
-    was thrown because of Batman. \
-    When you stop to think about \
-    how Batman had anything to do \
-    with this, you would get nowhere \
-    fast.';
-
-
-    // good
-    var errorMessage = 'This is a super long error that ' +
-      'was thrown because of Batman. ' +
-      'When you stop to think about ' +
-      'how Batman had anything to do ' +
-      'with this, you would get nowhere ' +
-      'fast.';
-    ```
-
-  - When programatically building up a string, use Array#join instead of string concatenation. Mostly for IE: [jsPerf](http://jsperf.com/string-vs-array-concat/2).
-
-    ```javascript
-    var items,
-        messages,
-        length,
-        i;
-
-    messages = [{
-      state: 'success',
-      message: 'This one worked.'
-    }, {
-      state: 'success',
-      message: 'This one worked as well.'
-    }, {
-      state: 'error',
-      message: 'This one did not work.'
-    }];
-
-    length = messages.length;
-
-    // bad
-    function inbox(messages) {
-      items = '<ul>';
-
-      for (i = 0; i < length; i++) {
-        items += '<li>' + messages[i].message + '</li>';
-      }
-
-      return items + '</ul>';
-    }
-
-    // good
-    function inbox(messages) {
-      items = [];
-
-      for (i = 0; i < length; i++) {
-        items[i] = messages[i].message;
-      }
-
-      return '<ul><li>' + items.join('</li><li>') + '</li></ul>';
-    }
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Functions
-
-  - Function expressions:
-
-    ```javascript
-    // anonymous function expression
-    var anonymous = function() {
-      return true;
-    };
-
-    // named function expression
-    var named = function named() {
-      return true;
-    };
-
-    // immediately-invoked function expression (IIFE)
-    (function() {
-      console.log('Welcome to the Internet. Please follow me.');
-    })();
-    ```
-
-  - Never declare a function in a non-function block (if, while, etc). Assign the function to a variable instead. Browsers will allow you to do it, but they all interpret it differently, which is bad news bears.
-  - **Note:** ECMA-262 defines a `block` as a list of statements. A function declaration is not a statement. [Read ECMA-262's note on this issue](http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf#page=97).
-
-    ```javascript
-    // bad
-    if (currentUser) {
-      function test() {
-        console.log('Nope.');
-      }
-    }
-
-    // good
-    var test;
-    if (currentUser) {
-      test = function test() {
-        console.log('Yup.');
-      };
-    }
-    ```
-
-  - Never name a parameter `arguments`, this will take precedence over the `arguments` object that is given to every function scope.
-
-    ```javascript
-    // bad
-    function nope(name, options, arguments) {
-      // ...stuff...
-    }
-
-    // good
-    function yup(name, options, args) {
-      // ...stuff...
-    }
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-
-## Properties
-
-  - Use dot notation when accessing properties.
-
-    ```javascript
-    var luke = {
-      jedi: true,
-      age: 28
-    };
-
-    // bad
-    var isJedi = luke['jedi'];
-
-    // good
-    var isJedi = luke.jedi;
-    ```
-
-  - Use subscript notation `[]` when accessing properties with a variable.
-
-    ```javascript
-    var luke = {
-      jedi: true,
-      age: 28
-    };
-
-    function getProp(prop) {
-      return luke[prop];
-    }
-
-    var isJedi = getProp('jedi');
-    ```
-
-**[⬆ back to top](#table-of-contents)**
 
 
 ## Variables
@@ -464,6 +180,341 @@
     ```
 
 **[⬆ back to top](#table-of-contents)**
+
+
+
+## Objects
+
+  - Use the literal syntax for object creation.
+
+    ```javascript
+    // bad
+    var item = new Object();
+
+    // good
+    var item = {};
+    ```
+
+  - Don't use [reserved words](http://es5.github.io/#x7.6.1) as keys. It won't work in IE8. [More info](https://github.com/airbnb/javascript/issues/61)
+
+    ```javascript
+    // bad
+    var superman = {
+      default: {clark: 'kent'},
+      private: true
+    };
+
+    // good
+    var superman = {
+      defaults: {clark: 'kent'},
+      hidden: true
+    };
+    ```
+
+  - Use readable synonyms in place of reserved words.
+
+    ```javascript
+    // bad
+    var superman = {
+      class: 'alien'
+    };
+
+    // bad
+    var superman = {
+      klass: 'alien'
+    };
+
+    // good
+    var superman = {
+      type: 'alien'
+    };
+    ```
+
+**[⬆ back to top](#table-of-contents)**
+
+## Arrays
+
+  - Use the literal syntax for array creation
+
+    ```javascript
+    // bad
+    var items = new Array();
+
+    // good
+    var items = [];
+    ```
+
+  - If you don't know array length use Array#push.
+
+    ```javascript
+    var someStack = [];
+
+
+    // bad
+    someStack[someStack.length] = 'abracadabra';
+
+    // good
+    someStack.push('abracadabra');
+    ```
+
+  - Don't save the `array.length` in variable for traversing in the loop and, if you define the variables before the loop, that you should define the iteration variable together with it.
+
+    ```javascript
+    // bad
+    var arr = [1, 2, 40, 12],
+        len = arr.length;
+
+    for (var i = 0; i < len; ++i) {
+      // loop actions
+    }
+
+    // good
+    var arr = [1, 2, 40, 12],
+        i = 0;
+
+    for (; i < arr.length; ++i) {
+      // loop actions
+    }
+    ```
+
+    - If you needed more than one variable in the loop, that better to define their previously.
+
+    ```javascript
+    // bad
+    for (var i = j = 0, arr = [1, 2, 40, 12]; i < arr.length; ++i) {
+      // loop actions
+    }
+
+    // good
+    var arr = [1, 2, 40, 12],
+        i = j = 0;
+
+    for (; i < arr.length; ++i) {
+      // loop actions
+    }
+    ```
+
+  - When you need to copy an array use Array#slice. [jsPerf](http://jsperf.com/converting-arguments-to-an-array/7). But you must remember, that an array, copied with help of the loop or method, will not be equal to the original array.
+
+    ```javascript
+    var itemsCopy = [],
+        i = 0;
+
+    // bad
+    for (; i < items.length; i++) {
+      itemsCopy[i] = items[i];
+    }
+    console.log(
+      itemsCopy == items, // false
+      itemsCopy.constructor === Array, // true
+      items.constructor === Array // true
+    );
+
+    // better
+    itemsCopy = items.slice();
+    console.log(
+      itemsCopy == items, // false
+      itemsCopy.constructor === Array, // true
+      items.constructor === Array // true
+    );
+
+    // good
+    itemsCopy = items;
+    console.log(
+      itemsCopy === items // true
+    );
+    ```
+
+  - To convert an array-like object to an array, use Array#slice.
+
+    ```javascript
+    function trigger() {
+      var args = Array.prototype.slice.call(arguments);
+      ...
+    }
+    ```
+  
+
+**[⬆ back to top](#table-of-contents)**
+
+
+## Strings
+
+  - Use single quotes `''` for strings
+
+    ```javascript
+    // bad
+    var name = "Bob Parr";
+
+    // good
+    var name = 'Bob Parr';
+
+    // bad
+    var fullName = "Bob " + this.lastName;
+
+    // good
+    var fullName = 'Bob ' + this.lastName;
+    ```
+
+  - Strings longer than 80 characters should be written across multiple lines using string concatenation.
+  - Note: If overused, long strings with concatenation could impact performance. [jsPerf](http://jsperf.com/ya-string-concat) & [Discussion](https://github.com/airbnb/javascript/issues/40)
+
+    ```javascript
+    // bad
+    var errorMessage = 'This is a super long error that was thrown because of Batman. When you stop to think about how Batman had anything to do with this, you would get nowhere fast.';
+
+    // bad
+    var errorMessage = 'This is a super long error that \
+    was thrown because of Batman. \
+    When you stop to think about \
+    how Batman had anything to do \
+    with this, you would get nowhere \
+    fast.';
+
+
+    // good
+    var errorMessage = 'This is a super long error that ' +
+      'was thrown because of Batman. ' +
+      'When you stop to think about ' +
+      'how Batman had anything to do ' +
+      'with this, you would get nowhere ' +
+      'fast.';
+    ```
+
+  - When programatically building up a string, use Array#join instead of string concatenation. Mostly for IE: [jsPerf](http://jsperf.com/string-vs-array-concat/2).
+
+    ```javascript
+    var i = 0,
+        messages = [{
+          state: 'success',
+          message: 'This one worked.'
+        }, {
+          state: 'success',
+          message: 'This one worked as well.'
+        }, {
+          state: 'error',
+          message: 'This one did not work.'
+        }];
+
+    // bad
+    function inbox(messages) {
+      var items = '<ul>';
+
+      for (; i < messages.length; i++) {
+        items += '<li>' + messages[i].message + '</li>';
+      }
+
+      return items + '</ul>';
+    }
+
+    // good
+    function inbox(messages) {
+      var items = [];
+
+      for (; i < length; i++) {
+        items[i] = messages[i].message;
+      }
+
+      return '<ul><li>' + items.join('</li><li>') + '</li></ul>';
+    }
+    ```
+
+**[⬆ back to top](#table-of-contents)**
+
+
+## Functions
+
+  - Function expressions:
+
+    ```javascript
+    // anonymous function expression
+    var anonymous = function() {
+      return true;
+    };
+
+    // named function expression
+    var named = function named() {
+      return true;
+    };
+
+    // immediately-invoked function expression (IIFE)
+    (function() {
+      console.log('Welcome to the Internet. Please follow me.');
+    })();
+    ```
+
+  - Never declare a function in a non-function block (if, while, etc). Assign the function to a variable instead. Browsers will allow you to do it, but they all interpret it differently, which is bad news bears.
+  - **Note:** ECMA-262 defines a `block` as a list of statements. A function declaration is not a statement. [Read ECMA-262's note on this issue](http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf#page=97).
+
+    ```javascript
+    // bad
+    if (currentUser) {
+      function test() {
+        console.log('Nope.');
+      }
+    }
+
+    // good
+    var test;
+    if (currentUser) {
+      test = function test() {
+        console.log('Yup.');
+      };
+    }
+    ```
+
+  - Never name a parameter `arguments`, this will take precedence over the `arguments` object that is given to every function scope.
+
+    ```javascript
+    // bad
+    function nope(name, options, arguments) {
+      // ...stuff...
+    }
+
+    // good
+    function yup(name, options, args) {
+      // ...stuff...
+    }
+    ```
+
+**[⬆ back to top](#table-of-contents)**
+
+
+
+## Properties
+
+  - Use dot notation when accessing properties.
+
+    ```javascript
+    var luke = {
+      jedi: true,
+      age: 28
+    };
+
+    // bad
+    var isJedi = luke['jedi'];
+
+    // good
+    var isJedi = luke.jedi;
+    ```
+
+  - Use subscript notation `[]` when accessing properties with a variable.
+
+    ```javascript
+    var luke = {
+      jedi: true,
+      age: 28
+    };
+
+    function getProp(prop) {
+      return luke[prop];
+    }
+
+    var isJedi = getProp('jedi');
+    ```
+
+**[⬆ back to top](#table-of-contents)**
+
 
 
 ## Hoisting
