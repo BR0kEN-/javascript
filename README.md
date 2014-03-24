@@ -1118,17 +1118,9 @@
     this._firstName = 'Panda';
     ```
 
-  - When saving a reference to `this` use `_this`.
+  - When saving a reference to `this` use `self`.
 
     ```javascript
-    // bad
-    function() {
-      var self = this;
-      return function() {
-        console.log(self);
-      };
-    }
-
     // bad
     function() {
       var that = this;
@@ -1139,25 +1131,11 @@
 
     // good
     function() {
-      var _this = this;
+      var self = this;
       return function() {
-        console.log(_this);
+        console.log(self);
       };
     }
-    ```
-
-  - Name your functions. This is helpful for stack traces.
-
-    ```javascript
-    // bad
-    var log = function(msg) {
-      console.log(msg);
-    };
-
-    // good
-    var log = function log(msg) {
-      console.log(msg);
-    };
     ```
 
 **[⬆ back to top](#table-of-contents)**
@@ -1321,7 +1299,7 @@
 
     ```js
     // good
-    $(this).trigger('listingUpdated', { listingId : listing.id });
+    $(this).trigger('listingUpdated', {listingId: listing.id});
 
     ...
 
