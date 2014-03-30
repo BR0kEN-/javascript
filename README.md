@@ -1178,7 +1178,7 @@
 
     ```javascript
     function Jedi(options) {
-      options || (options = {});
+      options = options || {};
       var lightsaber = options.lightsaber || 'blue';
       this.set('lightsaber', lightsaber);
     }
@@ -1206,7 +1206,7 @@
 
     // bad
     Jedi.prototype = {
-      fight: function fight() {
+      fight: function() {
         console.log('fighting');
       },
 
@@ -1216,11 +1216,11 @@
     };
 
     // good
-    Jedi.prototype.fight = function fight() {
+    Jedi.prototype.fight = function() {
       console.log('fighting');
     };
 
-    Jedi.prototype.block = function block() {
+    Jedi.prototype.block = function() {
       console.log('blocking');
     };
     ```
@@ -1264,7 +1264,7 @@
 
     ```javascript
     function Jedi(options) {
-      options || (options = {});
+      options = options || {};
       this.name = options.name || 'no name';
     }
 
@@ -1272,7 +1272,7 @@
       return this.name;
     };
 
-    Jedi.prototype.toString = function toString() {
+    Jedi.prototype.toString = function() {
       return 'Jedi - ' + this.getName();
     };
     ```
@@ -1344,16 +1344,6 @@
 
 ## jQuery
 
-  - Prefix jQuery object variables with a `$`.
-
-    ```javascript
-    // bad
-    var sidebar = $('.sidebar');
-
-    // good
-    var $sidebar = $('.sidebar');
-    ```
-
   - Cache jQuery lookups.
 
     ```javascript
@@ -1370,36 +1360,18 @@
 
     // good
     function setSidebar() {
-      var $sidebar = $('.sidebar');
-      $sidebar.hide();
+      var sidebar = $('.sidebar');
+      sidebar.hide();
 
       // ...stuff...
 
-      $sidebar.css({
+      sidebar.css({
         'background-color': 'pink'
       });
     }
     ```
 
   - For DOM queries use Cascading `$('.sidebar ul')` or parent > child `$('.sidebar > ul')`. [jsPerf](http://jsperf.com/jquery-find-vs-context-sel/16)
-  - Use `find` with scoped jQuery object queries.
-
-    ```javascript
-    // bad
-    $('ul', '.sidebar').hide();
-
-    // bad
-    $('.sidebar').find('ul').hide();
-
-    // good
-    $('.sidebar ul').hide();
-
-    // good
-    $('.sidebar > ul').hide();
-
-    // good
-    $sidebar.find('ul').hide();
-    ```
 
 **[⬆ back to top](#table-of-contents)**
 
