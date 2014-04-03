@@ -11,6 +11,7 @@
   1. [Arrays](#arrays)
   1. [Strings](#strings)
   1. [Functions](#functions)
+  1. [Type checking](#type-checking)
   1. [Properties](#properties)
   1. [Hoisting](#hoisting)
   1. [Conditional Expressions & Equality](#conditional-expressions--equality)
@@ -481,6 +482,53 @@
 
 
 
+## Type checking
+
+  - Checking types of the essences. Don't use the `toString` method, because it doesn't have a full support of browsers. For check the type of the essence, use the object `constructor` property.
+
+    ```javascript
+    // bad
+    function getType(target) {
+      return Object.prototype.toString.apply(target);
+    }
+
+    // all cases will be true
+    console.log(
+      getType(function() {}) === [object Function],
+      getType('') === [object String],
+      getType([]) === [object Array]
+    );
+
+    // good
+    function getType(target) {
+      switch (target) {
+        case null: return 'null';
+        case undefined: return 'undefined';
+      }
+
+      switch (target.constructor) {
+        case Function: return 'function';
+        case String: return 'string';
+        case Object: return 'object';
+        case Number: return 'number';
+        case Array: return 'array';
+        default:
+          return target.length ? 'array' : 'undefined';
+      }
+    }
+
+    // all cases will be true
+    console.log(
+      getType(function() {}) === 'function',
+      getType('') === 'string',
+      getType([]) === 'array'
+    );
+    ```
+
+**[⬆ back to top](#table-of-contents)**
+
+
+
 ## Properties
 
   - Use dot notation when accessing properties.
@@ -681,6 +729,50 @@
     }
     ```
 
+  - Put `else` and `catch` on the same line with closing brace.
+
+    ```javascript
+    // bad
+    if (test) {
+      return true;
+    }
+    else if (anotherTest) {
+      return false;
+    }
+    else {
+      return false;
+    }
+
+    // good
+    if (test) {
+      return 1;
+    } else if (anotherTest) {
+      return 0;
+    } else {
+      return -1;
+    }
+
+    // bad
+    try {
+      dragonsBeHere();
+    }
+    catch (e) {
+      console.log('very bad: ' + e);
+    }
+    finally {
+      console.log('Finally block');
+    }
+
+    // good
+    try {
+      dragonsBeHere();
+    } catch (e) {
+      console.log('very bad: ' + e);
+    } finally {
+      console.log('Finally block');
+    }
+    ```
+
 **[⬆ back to top](#table-of-contents)**
 
 
@@ -748,13 +840,32 @@
     }
     ```
 
+  - Use special code formatting for the multiple variable declaration.
+  
+    ```javascript
+    var /**
+         * [variable_one description]
+         * @type {Object}
+         */
+        variable_one = {},
+
+        /**
+         * [interactions description]
+         * @return {[type]} [description]
+         */
+        interactions = function() {
+          return {
+            user_id: 1
+          };
+        };
+    ```
+
   - Prefixing your comments with `FIXME` or `TODO` helps other developers quickly understand if you're pointing out a problem that needs to be revisited, or if you're suggesting a solution to the problem that needs to be implemented. These are different than regular comments because they are actionable. The actions are `FIXME -- need to figure this out` or `TODO -- need to implement`.
 
   - Use `// FIXME:` to annotate problems
 
     ```javascript
     function Calculator() {
-
       // FIXME: shouldn't use a global here
       total = 0;
 
@@ -766,7 +877,6 @@
 
     ```javascript
     function Calculator() {
-
       // TODO: total should be configurable by an options param
       this.total = 0;
 
@@ -1051,6 +1161,44 @@
 
 
 ## Naming Conventions
+  
+  - Use under score when naming the variables.
+  
+    ```javascript
+    // bad
+    var arrayExample = [],
+        stringExample = '';
+
+    // good
+    var array_example = [],
+        string_example = '';
+    ```
+
+  - Use camelCase when naming objects, methods, properties, functions, and instances.
+
+    ```javascript
+    // bad
+    var this_is_my_object = {};
+    function this_is_my_function() {};
+    var u = new user({
+      first_name: 'Bob',
+      last_name: 'Parr',
+      full_name: function() {
+        return this.first_name + ' ' + this.last_name;
+      }
+    });
+
+    // good
+    var thisIsMyObject = {};
+    function thisIsMyFunction() {};
+    var user = new User({
+      firstName: 'Bob',
+      lastName: 'Parr',
+      fullName: function() {
+        return this.firstName + ' ' + this.lastName;
+      }
+    });
+    ```
 
   - Avoid single letter names. Be descriptive with your naming.
 
@@ -1066,26 +1214,7 @@
     }
     ```
 
-  - Use camelCase when naming objects, functions, and instances
-
-    ```javascript
-    // bad
-    var OBJEcttsssss = {};
-    var this_is_my_object = {};
-    function c() {};
-    var u = new user({
-      name: 'Bob Parr'
-    });
-
-    // good
-    var thisIsMyObject = {};
-    function thisIsMyFunction() {};
-    var user = new User({
-      name: 'Bob Parr'
-    });
-    ```
-
-  - Use PascalCase when naming constructors or classes
+  - Use PascalCase when naming constructors or classes.
 
     ```javascript
     // bad
@@ -1118,7 +1247,7 @@
     this._firstName = 'Panda';
     ```
 
-  - When saving a reference to `this` use `self`.
+  - When saving a reference to `this` use `self` or `_this`.
 
     ```javascript
     // bad
@@ -1134,6 +1263,14 @@
       var self = this;
       return function() {
         console.log(self);
+      };
+    }
+
+    // good
+    function() {
+      var _this = this;
+      return function() {
+        console.log(_this);
       };
     }
     ```
