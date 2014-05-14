@@ -28,7 +28,6 @@
   1. [Modules](#modules)
   1. [jQuery](#jquery)
   1. [ECMAScript 5 Compatibility](#ecmascript-5-compatibility)
-  1. [Testing](#testing)
   1. [Performance](#performance)
   1. [Resources](#resources)
   1. [In the Wild](#in-the-wild)
@@ -1498,6 +1497,16 @@
 
 ## jQuery
 
+  - Use document ready shortcut.
+
+    ```javascript
+    // bar
+    $(document).ready(function() {});
+
+    // good
+    $(function() {});
+    ```
+
   - Cache jQuery lookups.
 
     ```javascript
@@ -1533,19 +1542,6 @@
 ## ECMAScript 5 Compatibility
 
   - Refer to [Kangax](https://twitter.com/kangax/)'s ES5 [compatibility table](http://kangax.github.com/es5-compat-table/)
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Testing
-
-  - **Yup.**
-
-    ```javascript
-    function() {
-      return true;
-    }
-    ```
 
 **[⬆ back to top](#table-of-contents)**
 
